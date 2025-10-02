@@ -8,19 +8,14 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  get<T>(u: string, params?: any) {
-    return this.http.get<T>(`${this.base}${u}`, { params });
+  private join(path: string) {
+    const left  = String(this.base ?? '').replace(/\/+$/, '');
+    const right = String(path ?? '').replace(/^\/+/, '');
+    return `${left}/${right}`;
   }
 
-  post<T>(u: string, body: any) {
-    return this.http.post<T>(`${this.base}${u}`, body);
-  }
-
-  put<T>(u: string, body: any) {
-    return this.http.put<T>(`${this.base}${u}`, body);
-  }
-
-  delete<T>(u: string) {
-    return this.http.delete<T>(`${this.base}${u}`);
-  }
+  get<T>(u: string, params?: any) { return this.http.get<T>(this.join(u), { params }); }
+  post<T>(u: string, body: any)    { return this.http.post<T>(this.join(u), body); }
+  put<T>(u: string, body: any)     { return this.http.put<T>(this.join(u), body); }
+  delete<T>(u: string)             { return this.http.delete<T>(this.join(u)); }
 }

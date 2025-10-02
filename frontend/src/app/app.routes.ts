@@ -1,12 +1,41 @@
+// src/app/app.routes.ts
 import { Routes } from '@angular/router';
-import { BooksListComponent } from './features/books/books-list.component';
-import { LoansPageComponent } from './features/loans/loans-page';
-import { StatsDashboardComponent } from './features/stats/stats-dashboard.component';
+import { authGuard } from './core/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'books', pathMatch: 'full' },
-  { path: 'books', component: BooksListComponent },
-  { path: 'loans', component: LoansPageComponent },
-  { path: 'stats', component: StatsDashboardComponent },
-  { path: '**', redirectTo: 'books' },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./features/stats/stats-dashboard.component')
+      .then(m => m.StatsDashboardComponent),
+    
+  },
+  {
+    path: 'books',
+    loadComponent: () =>
+      import('./features/books/books-list.component')
+      .then(m => m.BooksListComponent),
+    
+  },
+  {
+    path: 'loans',
+    loadComponent: () =>
+      import('./features/loans/loans-page.component')
+      .then(m => m.LoansPageComponent),
+    
+  },
+  {
+    path: 'users',
+    loadComponent: () =>
+      import('./features/users/users-list.component')
+      .then(m => m.UsersListComponent),
+    
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./features/auth/login.component')
+      .then(m => m.LoginComponent),
+  },
+  { path: '**', redirectTo: '' },
 ];

@@ -15,14 +15,15 @@ class BookFactory extends Factory
      * @return array<string, mixed>
      */
     public function definition() {
-  $total = fake()->numberBetween(1,10);
-  return [
-    'title'=>fake()->sentence(3),
-    'author'=>fake()->name(),
-    'genre'=>fake()->randomElement(['Ficción','No Ficción','Ciencia','Historia']),
-    'total_copies'=>$total,
-    'available_copies'=>$total,
-  ];
+  $total = $this->faker->numberBetween(1, 10);
+        $available = $this->faker->numberBetween(0, $total);
+        return [
+            'title' => $this->faker->sentence(3),
+            'author' => $this->faker->name(),
+            'genre' => $this->faker->randomElement(['Ficción','Historia','Ciencia','Infantil', null]),
+            'total_copies' => $total,
+            'available_copies' => $available,
+        ];
 }
 
 }
