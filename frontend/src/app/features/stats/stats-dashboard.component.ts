@@ -6,7 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { StatsService } from './stats.service';
 
 @Component({
-   selector: 'app-stats-dashboard',
+  selector: 'app-stats-dashboard',
   standalone: true,
   imports: [CommonModule, BaseChartDirective, MatCardModule],
   template: `
@@ -40,41 +40,41 @@ import { StatsService } from './stats.service';
       gap: 12px;
       padding: 12px;
     }
-
-    mat-card {
-      padding: 16px;
-      text-align: center;
-    }
-
+    mat-card { padding: 16px; text-align: center; }
     .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0,0,0,0);
-      white-space: nowrap;
-      border: 0;
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
     }
   `]
-
 })
 export class StatsDashboardComponent implements OnInit {
   availabilityPct = 0;
 
+  // NUEVO:
+  activeUsers = 0;
+  totalLoans = 0;
+
   lineData: ChartConfiguration<'line'>['data'] = {
     labels: [],
-    datasets: [{ label: 'Préstamos', data: [] }],
+    datasets: [{ label: 'Préstamos', data: [] as number[] }],
   };
 
   constructor(private stats: StatsService) {}
 
   ngOnInit() {
     this.stats.overview().subscribe((o: any) => {
-      this.availabilityPct = o.availabilityPct;
-      this.lineData.labels = o.loansPerMonth.map((x: any) => x.ym);
-      this.lineData.datasets[0].data = o.loansPerMonth.map((x: any) => x.total);
+      this.availabilityPct = Number(o?.availabilityPct ?? 0);
+
+      const months = Array.isArray(o?.loansPerMonth) ? o.loansPerMonth : [];
+      this.lineData.labels = months.map((m: any) => m.ym);
+      this.lineData.datasets[0].data = months.map((m: any) => Number(m.total) || 0);
+
+      // Total de préstamos = suma de la serie
+      this.totalLoans = (this.lineData.datasets[0].data as number[]).reduce((a, b) => a + b, 0);
+
+      // Usuarios activos = longitud de la lista topUsers (según tu backend actual)
+      const topUsers = Array.isArray(o?.topUsers) ? o.topUsers : [];
+      this.activeUsers = topUsers.length;
     });
   }
 }

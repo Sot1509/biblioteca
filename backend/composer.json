@@ -60,6 +60,12 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
+        ],
+        "serve": "php -S 127.0.0.1:8000 -t public",
+        "docs:gen": "php artisan l5-swagger:generate",
+        "start": [
+            "@php -r \"echo 'Visit http://127.0.0.1:8000';\"",
+            "@php -S 127.0.0.1:8000 -t public"
         ]
     },
     "extra": {

@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Swagger;
 
-use App\Models\Book;
-use App\Http\Requests\StoreBookRequest;
-use App\Http\Requests\UpdateBookRequest;
-
-/**
- * @OA\Tag(name="Books")
- */
-class BookController extends Controller
+class BooksPaths
 {
+    /**
+     * @OA\Tag(name="Books")
+     */
+
     /**
      * @OA\Get(
      *   path="/api/books",
@@ -27,30 +24,6 @@ class BookController extends Controller
      *   )
      * )
      */
-    public function index(\Illuminate\Http\Request $r)
-{
-    $q     = $r->string('q');
-    $sort  = $r->string('sort', 'id');
-    $order = $r->string('order', 'asc') === 'desc' ? 'desc' : 'asc';
-    $per   = (int) $r->integer('per_page', 10);
-
-    $query = \App\Models\Book::query();
-
-    if ($q) {
-        $query->where(function($w) use ($q) {
-            $w->where('title', 'like', "%{$q}%")
-              ->orWhere('author', 'like', "%{$q}%");
-        });
-    }
-
-    // columnas permitidas para orden
-    $allowedSort = ['id','title','author','total_copies','available_copies','created_at'];
-    if (!in_array($sort, $allowedSort, true)) $sort = 'id';
-
-    $query->orderBy($sort, $order);
-
-    return $query->paginate($per);
-}
 
     /**
      * @OA\Post(
@@ -73,10 +46,6 @@ class BookController extends Controller
      *   @OA\Response(response=422, description="Validación")
      * )
      */
-    public function store(StoreBookRequest $r)
-    {
-        return response()->json(Book::create($r->validated()), 201);
-    }
 
     /**
      * @OA\Get(
@@ -89,10 +58,6 @@ class BookController extends Controller
      *   @OA\Response(response=404, description="No encontrado")
      * )
      */
-    public function show(Book $book)
-    {
-        return $book;
-    }
 
     /**
      * @OA\Put(
@@ -115,11 +80,6 @@ class BookController extends Controller
      *   @OA\Response(response=404, description="No encontrado")
      * )
      */
-    public function update(UpdateBookRequest $r, Book $book)
-    {
-        $book->update($r->validated());
-        return $book;
-    }
 
     /**
      * @OA\Delete(
@@ -132,9 +92,4 @@ class BookController extends Controller
      *   @OA\Response(response=404, description="No encontrado")
      * )
      */
-    public function destroy(Book $book)
-    {
-        $book->delete();
-        return response()->noContent();
-    }
 }
