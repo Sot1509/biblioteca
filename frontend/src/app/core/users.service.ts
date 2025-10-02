@@ -2,13 +2,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ApiService } from '../../core/api.service';
+import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
   private api = inject(ApiService);
 
-  
+ 
   list(perPageOrOpts: number | { per_page?: number; page?: number; q?: string } = 1000): Observable<any> {
     const opts = typeof perPageOrOpts === 'number'
       ? { per_page: perPageOrOpts }
@@ -22,10 +22,8 @@ export class UsersService {
       },
     });
 
-    
+   
     return this.api.get('users', params);
-
-    
   }
 
   create(payload: any): Observable<any> {
